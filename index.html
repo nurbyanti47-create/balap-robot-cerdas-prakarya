@@ -3,173 +3,229 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Balap Robot Cerdas</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#eaf5ff;color:#183153}
-header{background:#173f80;color:white;text-align:center;padding:22px 12px}
-header h1{margin:0 0 8px;font-size:clamp(24px,5vw,38px)}
-header p{margin:0}
-main{max-width:1000px;margin:auto;padding:16px}
-.panel{background:white;padding:18px;border-radius:18px;margin-bottom:16px;box-shadow:0 4px 12px #15365b18}
-.teams{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.team{padding:12px;border-radius:12px;color:#17233b;font-weight:bold}
-.blue{background:#cce7ff}.red{background:#ffd6d6}
-.yellow{background:#fff0a8}.green{background:#c9f5d4}
-.track{height:36px;background:#e4e8ee;border-radius:20px;margin-top:10px;overflow:hidden}
-.runner{height:100%;width:0%;border-radius:20px;transition:width .7s;display:flex;align-items:center;padding-left:6px;font-size:23px}
-.track-label{display:flex;justify-content:space-between;font-size:12px;margin-top:4px}
-button{border:0;border-radius:10px;padding:12px 16px;font-size:16px;font-weight:bold;cursor:pointer}
-.primary{background:#1769d2;color:white}
-.secondary{background:#e5edf8;color:#173f80}
-button:disabled{opacity:.5;cursor:not-allowed}
-.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.answer{background:#edf4ff;text-align:left;border:2px solid #d5e4fa;color:#183153}
-.answer:hover:not(:disabled){background:#d8e9ff}
-.answer.correct{background:#c9f5d4;border-color:#219653}
-.answer.wrong{background:#ffd6d6;border-color:#d33}
-#feedback{font-weight:bold;margin-top:16px;line-height:1.5}
-#question{font-size:20px;line-height:1.5}
-.badge{display:inline-block;padding:7px 10px;border-radius:20px;background:#e5edf8;margin:3px}
-footer{text-align:center;padding:20px;color:#52647c;font-size:13px}
-@media(max-width:560px){.teams{grid-template-columns:1fr}.answers{grid-template-columns:1fr}main{padding:10px}}
+body{margin:0;font-family:Arial,sans-serif;background:#edf4ff;color:#173153}
+header{background:#173f80;color:white;text-align:center;padding:12px}
+header h1{margin:0;font-size:clamp(23px,3vw,36px)}
+header p{margin:5px}
+main{max-width:1500px;margin:auto;padding:12px}
+.panel{background:white;padding:14px;border-radius:14px;margin-bottom:12px;box-shadow:0 3px 12px #1232}
+h2{margin:0 0 12px}
+.races{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.robot{padding:10px;border-radius:12px}
+.blue{background:#cce7ff}.red{background:#ffd9d9}
+.yellow{background:#fff0ad}.green{background:#cdf5d6}
+.racehead{display:flex;justify-content:space-between;gap:6px;font-weight:bold}
+.track{height:28px;margin:8px 0 4px;background:repeating-linear-gradient(90deg,#e0e5eb 0 9%,#fff 9% 10%);border:1px solid #ccd2dc;border-radius:20px;position:relative;overflow:hidden}
+.runner{height:100%;width:0%;border-radius:20px;transition:width .55s;display:flex;align-items:center;justify-content:flex-end;font-size:20px}
+.startfinish{display:flex;justify-content:space-between;font-size:11px}
+.questions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.qcard{border:2px solid #dce6f4;border-radius:12px;padding:12px;min-width:0}
+.qtitle{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:9px}
+.qtext{line-height:1.4;font-size:clamp(14px,1.3vw,18px);margin-bottom:10px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+button{font-size:15px;cursor:pointer;border:0;border-radius:9px;padding:10px}
+.answer{background:#edf3fb;border:2px solid #d9e4f2;text-align:left;color:#173153;min-height:44px;overflow-wrap:anywhere}
+.answer.chosen{background:#d1e6ff;border-color:#2478d0}
+.answer.right{background:#c8f1d2;border-color:#208743}
+.answer.wrong{background:#ffd3d3;border-color:#d33}
+button:disabled{cursor:default;opacity:1}
+.actions{display:flex;gap:9px;flex-wrap:wrap}
+.primary{background:#1769d2;color:white;font-weight:bold}
+.secondary{background:#e4ecf8;color:#173f80;font-weight:bold}
+.feedback{font-size:13px;line-height:1.4;margin-top:9px;font-weight:bold}
+.muted{color:#60718a;font-size:13px}
+#results{line-height:1.8}
+@media(max-width:650px){.races,.questions{grid-template-columns:1fr}.answers{grid-template-columns:1fr}}
+@media(min-width:1100px){main{padding:16px}.panel{padding:16px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>🤖 BALAP ROBOT CERDAS 🏁</h1>
-  <p>Jawab pertanyaan, pacu robotmu, raih garis finis!</p>
+<h1>🤖 BALAP ROBOT CERDAS 🏁</h1>
+<p>Jawab 10 soal • Pacu robot kelompokmu menuju garis finis!</p>
 </header>
 <main>
-  <section class="panel">
-    <h2>🏎️ Arena Balapan</h2>
-    <p>Setiap kelompok mendapat giliran menjawab. Jawaban benar memajukan robot satu langkah.</p>
-    <div class="teams" id="teams"></div>
-  </section>
+<section class="panel">
+<h2>🏎️ Arena Balapan</h2>
+<div class="races" id="races"></div>
+</section>
 
-  <section class="panel">
-    <div id="status" class="badge">Siap bermain!</div>
-    <h2 id="turnTitle">Mulai Perlombaan</h2>
-    <p id="intro">Bersiaplah, para pembalap! Tekan tombol mulai untuk memulai kuis.</p>
-    <button class="primary" id="startBtn" onclick="startGame()">🚦 MULAI BALAPAN</button>
-    <div id="quiz" hidden>
-      <p id="question"></p>
-      <div class="answers" id="answers"></div>
-      <div id="feedback" aria-live="polite"></div>
-      <button class="primary" id="nextBtn" onclick="nextTurn()" hidden>Giliran Berikutnya ➜</button>
-    </div>
-  </section>
-  <section class="panel">
-    <h2>📊 Papan Skor</h2>
-    <div id="scoreboard">Belum ada skor.</div>
-    <button class="secondary" onclick="resetGame()">🔄 Ulangi Game</button>
-  </section>
+<section class="panel">
+<h2 id="roundTitle">Siap Memulai!</h2>
+<p id="instruction">Setiap kelompok mendapat 10 soal yang diacak. Pilih jawaban pada setiap kartu soal.</p>
+<div class="actions">
+<button class="primary" id="startBtn" onclick="startGame()">🚦 Mulai Balapan</button>
+<button class="primary" id="checkBtn" onclick="checkRound()" hidden>✅ Periksa Jawaban</button>
+<button class="primary" id="nextBtn" onclick="nextRound()" hidden>Babak Berikutnya ➜</button>
+<button class="secondary" onclick="resetGame()">🔄 Ulangi Game</button>
+</div>
+<p class="muted" id="progress"></p>
+</section>
+
+<section class="questions" id="questions"></section>
+
+<section class="panel">
+<h2>🏆 Papan Skor</h2>
+<div id="results">Belum ada hasil. Mulai balapan untuk bermain.</div>
+<p class="muted">Setiap jawaban benar bernilai 10 poin dan membuat robot maju satu langkah.</p>
+</section>
 </main>
-<footer>Game pembelajaran Prakarya • Semangat belajar dan bermain sportif!</footer>
 
 <script>
-const colors = [
- {name:"Robot Biru",color:"blue",emoji:"🤖"},
- {name:"Robot Merah",color:"red",emoji:"🤖"},
- {name:"Robot Kuning",color:"yellow",emoji:"🤖"},
- {name:"Robot Hijau",color:"green",emoji:"🤖"}
+const colors=[
+ {name:"Robot Biru",cls:"blue",bar:"#3188e8"},
+ {name:"Robot Merah",cls:"red",bar:"#ef5350"},
+ {name:"Robot Kuning",cls:"yellow",bar:"#d9ad00"},
+ {name:"Robot Hijau",cls:"green",bar:"#27ae60"}
 ];
 
-const questions = [
- {q:"Rani mengamati ikan yang tubuhnya licin dan memiliki kumis panjang di sekitar mulut. Ikan apakah itu?",a:["Ikan bandeng","Ikan lele","Ikan tenggiri","Ikan tuna"],c:1,e:"Ikan lele memiliki tubuh licin dan sungut atau kumis di sekitar mulut."},
- {q:"Ikan bandeng banyak dibudidayakan di lingkungan perairan ....",a:["Air payau","Pegunungan","Air terjun","Padang pasir"],c:0,e:"Ikan bandeng dikenal sebagai ikan yang dapat dibudidayakan di tambak air payau."},
- {q:"Bandeng presto merupakan olahan ikan bandeng yang dimasak menggunakan ....",a:["Pengeringan matahari","Pembakaran langsung saja","Tekanan dan suhu tinggi","Pembekuan"],c:2,e:"Bandeng presto dimasak dengan tekanan tinggi sehingga durinya menjadi lebih lunak."},
- {q:"Ikan tenggiri dikenal memiliki ciri tubuh ....",a:["Bulat seperti bola","Sangat pipih seperti daun","Berduri panjang di seluruh tubuh","Memanjang dan cukup kuat untuk berenang cepat"],c:3,e:"Ikan tenggiri bertubuh memanjang dan merupakan perenang yang cepat."},
- {q:"Udang rebon berukuran kecil dan sering digunakan sebagai bahan pembuatan ....",a:["Keju","Terasi","Yoghurt","Mentega"],c:1,e:"Udang rebon banyak dimanfaatkan untuk membuat terasi."},
- {q:"Udang windu umumnya memiliki ciri ....",a:["Tidak memiliki kaki","Hidup di daratan kering","Tubuh relatif besar dengan corak belang","Tubuh berbulu lebat"],c:2,e:"Udang windu dikenal berukuran relatif besar dan memiliki corak belang."},
- {q:"Cumi-cumi memiliki bagian lengan dan tentakel yang digunakan untuk membantu ....",a:["Menangkap mangsa","Menghasilkan susu","Berjalan di darat","Membuat sarang dari kayu"],c:0,e:"Lengan dan tentakel membantu cumi-cumi menangkap serta memegang mangsa."},
- {q:"Salah satu cara mengolah cumi-cumi adalah ....",a:["Membuatnya menjadi tepung tanpa proses","Menyimpan di bawah sinar matahari saja","Mencampur dengan tanah","Memanggangnya hingga matang"],c:3,e:"Cumi-cumi dapat diolah dengan cara dipanggang, ditumis, atau dimasak dengan cara lain."},
- {q:"Tubuh rumput laut yang berupa struktur mirip batang, daun, atau helaian disebut ....",a:["Akar tunggang","Talus","Biji","Umbi"],c:1,e:"Tubuh rumput laut disebut talus karena tidak memiliki akar, batang, dan daun sejati seperti tumbuhan darat."},
- {q:"Rumput laut dapat dimanfaatkan sebagai bahan baku pembuatan ....",a:["Bensin","Batu bata","Agar-agar","Kertas logam"],c:2,e:"Jenis rumput laut tertentu dimanfaatkan untuk menghasilkan agar-agar dan bahan pangan lainnya."}
+const bank=[
+ {q:"Ikan yang memiliki tubuh licin dan kumis panjang adalah ....",a:["Ikan bandeng","Ikan lele","Ikan tenggiri","Ikan tuna"],c:1,e:"Ikan lele memiliki tubuh licin dan sungut di sekitar mulut."},
+ {q:"Ikan bandeng banyak dibudidayakan di perairan ....",a:["Air payau","Gurun","Pegunungan","Air terjun"],c:0,e:"Bandeng banyak dibudidayakan di tambak air payau."},
+ {q:"Bandeng presto dimasak menggunakan ....",a:["Pembekuan","Pengeringan saja","Tekanan tinggi","Pengasinan saja"],c:2,e:"Tekanan tinggi membantu melunakkan duri bandeng."},
+ {q:"Ikan tenggiri memiliki ciri tubuh ....",a:["Bulat seperti bola","Berbulu","Sangat pendek","Memanjang dan kuat"],c:3,e:"Tenggiri memiliki tubuh memanjang dan berenang cepat."},
+ {q:"Udang rebon sering digunakan sebagai bahan pembuatan ....",a:["Keju","Terasi","Mentega","Yoghurt"],c:1,e:"Udang rebon banyak dimanfaatkan untuk membuat terasi."},
+ {q:"Udang windu dikenal memiliki ....",a:["Bulu tebal","Sayap","Corak belang","Kaki seperti burung"],c:2,e:"Udang windu dikenal memiliki corak belang pada tubuhnya."},
+ {q:"Lengan dan tentakel cumi-cumi membantu untuk ....",a:["Menangkap mangsa","Menghasilkan susu","Berjalan di darat","Membuat sarang"],c:0,e:"Lengan dan tentakel membantu cumi-cumi menangkap mangsa."},
+ {q:"Salah satu cara mengolah cumi-cumi adalah ....",a:["Mencampurnya dengan tanah","Menyimpan di pasir","Membekukan selamanya","Memanggang hingga matang"],c:3,e:"Cumi-cumi dapat dipanggang hingga matang."},
+ {q:"Tubuh rumput laut yang tidak memiliki akar, batang, dan daun sejati disebut ....",a:["Akar tunggang","Talus","Biji","Umbi"],c:1,e:"Tubuh rumput laut disebut talus."},
+ {q:"Rumput laut tertentu dapat dimanfaatkan untuk membuat ....",a:["Batu bata","Bensin","Agar-agar","Besi"],c:2,e:"Jenis rumput laut tertentu digunakan untuk membuat agar-agar."},
+ {q:"Hewan yang termasuk hasil perikanan adalah ....",a:["Kambing","Sapi","Ayam","Udang"],c:3,e:"Udang merupakan hasil perikanan."},
+ {q:"Telur dan susu termasuk hasil ....",a:["Pertambangan","Peternakan","Perkebunan","Kehutanan"],c:1,e:"Telur dan susu merupakan hasil peternakan."},
+ {q:"Ikan yang hidup di laut termasuk ikan ....",a:["Air laut","Air tawar saja","Pegunungan","Kolam saja"],c:0,e:"Ikan laut hidup di perairan laut."},
+ {q:"Bahan pangan yang berasal dari peternakan adalah ....",a:["Rumput laut","Cumi-cumi","Daging ayam","Udang"],c:2,e:"Daging ayam merupakan hasil peternakan."},
+ {q:"Sebelum mengolah ikan, bahan pangan sebaiknya ....",a:["Dibiarkan kotor","Dicuci dan dibersihkan","Dicampur tanah","Diletakkan di lantai"],c:1,e:"Bahan pangan perlu dibersihkan sebelum diolah."},
+ {q:"Salah satu tujuan mengolah bahan pangan adalah ....",a:["Membuatnya selalu kotor","Menghilangkan semua gizi","Membuatnya tidak layak makan","Menghasilkan makanan yang siap dikonsumsi"],c:3,e:"Pengolahan membuat bahan pangan siap dikonsumsi dan dapat meningkatkan variasi makanan."},
+ {q:"Udang, cumi-cumi, dan ikan termasuk sumber pangan ....",a:["Perikanan","Pertambangan","Kehutanan","Batuan"],c:0,e:"Ikan, udang, dan cumi-cumi merupakan hasil perikanan."},
+ {q:"Salah satu cara menjaga mutu bahan pangan adalah ....",a:["Membiarkannya terbuka dan kotor","Menyimpannya dengan tepat","Mencampurnya dengan sampah","Membiarkannya terkena hama"],c:1,e:"Penyimpanan yang tepat membantu menjaga mutu bahan pangan."},
+ {q:"Alat yang digunakan untuk memotong bahan makanan adalah ....",a:["Penghapus","Penggaris","Pisau","Pensil"],c:2,e:"Pisau digunakan untuk memotong bahan makanan dengan hati-hati."},
+ {q:"Saat mengolah bahan pangan, kita perlu menjaga ....",a:["Kebersihan dan keamanan","Lantai tetap kotor","Bahan tercampur sampah","Tangan tidak dicuci"],c:0,e:"Kebersihan dan keamanan penting dalam pengolahan pangan."}
 ];
 
-let teams,turn,used,finished,currentQ,locked,playing;
+let teams=[],round=0,active=false,checked=false;
+let assignments=[];
 
-function resetData(){
- teams=colors.map(t=>({...t,steps:0,score:0}));
- turn=0;used=[];finished=false;currentQ=null;locked=false;playing=false;
+function shuffle(arr){
+ let x=arr.slice();
+ for(let i=x.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [x[i],x[j]]=[x[j],x[i]];
+ }
+ return x;
 }
-function renderTeams(){
- document.getElementById("teams").innerHTML=teams.map((t,i)=>`
- <div class="team ${t.color}">
- <div>${t.emoji} ${t.name} <span style="float:right">${t.score} poin</span></div>
- <div class="track"><div class="runner" style="width:${t.steps*20}%;background:${({blue:"#3188e8",red:"#ef5350",yellow:"#e9b923",green:"#27ae60"})[t.color]}">${t.emoji}</div></div>
- <div class="track-label"><span>START</span><span>FINIS 🏁</span></div>
- <small>Langkah: ${t.steps}/5</small>
+function initTeams(){
+ teams=colors.map(t=>({...t,score:0,steps:0,answers:[],done:false}));
+}
+function renderRaces(){
+ document.getElementById("races").innerHTML=teams.map((t,i)=>`
+ <div class="robot ${t.cls}">
+ <div class="racehead"><span>🤖 ${t.name}</span><span>${t.score} poin</span></div>
+ <div class="track"><div class="runner" style="width:${t.steps*20}%;background:${t.bar}">🤖</div></div>
+ <div class="startfinish"><span>START</span><span>FINIS 🏁</span></div>
+ <small>Langkah ${t.steps}/5 • Benar ${t.score/10}</small>
  </div>`).join("");
- document.getElementById("scoreboard").innerHTML=teams.slice().sort((a,b)=>b.score-a.score).map((t,i)=>`${i+1}. ${t.name}: <b>${t.score} poin</b>`).join("<br>");
+ document.getElementById("results").innerHTML=teams.slice().sort((a,b)=>b.score-a.score).map((t,i)=>`${i+1}. <b>${t.name}</b>: ${t.score} poin — ${t.score/10} jawaban benar`).join("<br>");
 }
 function startGame(){
- resetData();playing=true;
+ initTeams();round=0;active=true;checked=false;
+ assignments=teams.map(()=>shuffle([...Array(bank.length).keys()]).slice(0,10));
  document.getElementById("startBtn").hidden=true;
- document.getElementById("intro").hidden=true;
- document.getElementById("quiz").hidden=false;
- renderTeams();showQuestion();
+ document.getElementById("questions").hidden=false;
+ showRound();
 }
-function showQuestion(){
- if(teams.some(t=>t.steps>=5)||used.length>=questions.length){endGame();return}
- if(teams[turn].steps>=5){turn=(turn+1)%4;showQuestion();return}
- let available=questions.map((q,i)=>i).filter(i=>!used.includes(i));
- let idx=available[Math.floor(Math.random()*available.length)];
- used.push(idx);currentQ=questions[idx];locked=false;
- document.getElementById("status").textContent="Giliran: "+teams[turn].name;
- document.getElementById("turnTitle").textContent="Pertanyaan "+used.length+" dari "+questions.length;
- document.getElementById("question").textContent=currentQ.q;
- document.getElementById("feedback").textContent="";
+function showRound(){
+ checked=false;
+ document.getElementById("roundTitle").textContent="Babak "+(round+1)+" dari 10";
+ document.getElementById("instruction").textContent="Keempat kelompok menjawab soal pada saat yang sama. Soal dan urutannya diacak untuk setiap kelompok.";
+ document.getElementById("progress").textContent="Pilih satu jawaban pada setiap soal. Periksa jawaban setelah semua kelompok selesai.";
+ document.getElementById("checkBtn").hidden=false;
  document.getElementById("nextBtn").hidden=true;
- document.getElementById("answers").innerHTML=currentQ.a.map((a,i)=>`<button class="answer" onclick="answer(${i},this)">${String.fromCharCode(65+i)}. ${a}</button>`).join("");
+
+ document.getElementById("questions").innerHTML=teams.map((t,i)=>{
+  let q=bank[assignments[i][round]];
+  let opts=shuffle(q.a.map((txt,j)=>({txt,correct:j===q.c})));
+  t.current={q,opts,selected:null};
+  return `<article class="qcard ${t.cls}">
+   <div class="qtitle"><span>${t.name}</span><span>Soal ${round+1}/10</span></div>
+   <div class="qtext">${q.q}</div>
+   <div class="answers">${opts.map((o,j)=>`<button class="answer" id="a${i}_${j}" onclick="pick(${i},${j})">${String.fromCharCode(65+j)}. ${o.txt}</button>`).join("")}</div>
+   <div class="feedback" id="f${i}">Pilih jawaban.</div>
+  </article>`;
+ }).join("");
+ renderRaces();
 }
-function answer(i,btn){
- if(locked)return;locked=true;
- document.querySelectorAll(".answer").forEach(b=>b.disabled=true);
- let correct=i===currentQ.c;
- btn.classList.add(correct?"correct":"wrong");
- if(correct){
-  teams[turn].steps=Math.min(5,teams[turn].steps+1);
-  teams[turn].score+=10;
-  document.getElementById("feedback").innerHTML="✅ Benar! Robot maju satu langkah dan mendapat 10 poin.<br>"+currentQ.e;
- }else{
-  document.querySelectorAll(".answer")[currentQ.c].classList.add("correct");
-  document.getElementById("feedback").innerHTML="❌ Belum tepat. Robot belum maju.<br>Jawaban benar: "+currentQ.a[currentQ.c]+". "+currentQ.e;
+function pick(i,j){
+ if(!active||checked||teams[i].done)return;
+ teams[i].current.selected=j;
+ for(let k=0;k<4;k++)document.getElementById(`a${i}_${k}`).classList.toggle("chosen",k===j);
+ document.getElementById("f"+i).textContent="Jawaban dipilih.";
+}
+function checkRound(){
+ if(!active||checked)return;
+ if(teams.some(t=>!t.done&&t.current.selected===null)){
+  alert("Pastikan semua kelompok memilih jawaban terlebih dahulu.");
+  return;
  }
- renderTeams();
+ checked=true;
+ teams.forEach((t,i)=>{
+  if(t.done){document.getElementById("f"+i).textContent="Robot sudah finis.";return;}
+  let cur=t.current,chosen=cur.opts[cur.selected];
+  cur.opts.forEach((o,j)=>{
+   let b=document.getElementById(`a${i}_${j}`);
+   b.disabled=true;
+   if(o.correct)b.classList.add("right");
+   else if(j===cur.selected)b.classList.add("wrong");
+  });
+  if(chosen.correct){
+   t.score+=10;t.steps=Math.min(5,t.steps+1);
+   document.getElementById("f"+i).textContent="✅ Benar! +10 poin. "+cur.q.e;
+  }else{
+   document.getElementById("f"+i).textContent="❌ Belum tepat. "+cur.q.e;
+  }
+  if(t.steps>=5)t.done=true;
+ });
+ renderRaces();
+ document.getElementById("checkBtn").hidden=true;
  document.getElementById("nextBtn").hidden=false;
- document.getElementById("nextBtn").textContent=(used.length>=questions.length||teams.some(t=>t.steps>=5))?"Lihat Hasil 🏆":"Giliran Berikutnya ➜";
+ document.getElementById("nextBtn").textContent=round===9?"Lihat Hasil 🏆":"Babak Berikutnya ➜";
+ document.getElementById("progress").textContent="Jawaban sudah diperiksa.";
 }
-function nextTurn(){
- if(teams.some(t=>t.steps>=5)||used.length>=questions.length){endGame();return}
- turn=(turn+1)%4;showQuestion();
+function nextRound(){
+ if(!checked)return;
+ if(round===9){endGame();return;}
+ round++;showRound();
 }
 function endGame(){
- playing=false;
- document.getElementById("quiz").hidden=true;
+ active=false;
+ document.getElementById("questions").hidden=true;
+ document.getElementById("nextBtn").hidden=true;
+ document.getElementById("roundTitle").textContent="🏆 Perlombaan Selesai!";
+ document.getElementById("instruction").textContent="Setiap kelompok telah menyelesaikan 10 soal. Pemenang ditentukan berdasarkan jumlah jawaban benar.";
+ document.getElementById("progress").textContent="";
+ let max=Math.max(...teams.map(t=>t.score));
+ let winners=teams.filter(t=>t.score===max).map(t=>t.name);
+ document.getElementById("results").innerHTML="🏆 <b>Pemenang: "+winners.join(", ")+"</b><br>"+teams.slice().sort((a,b)=>b.score-a.score).map((t,i)=>`${i+1}. ${t.name}: ${t.score} poin`).join("<br>");
  document.getElementById("startBtn").hidden=false;
- document.getElementById("startBtn").textContent="🚦 MAIN LAGI";
- document.getElementById("intro").hidden=false;
- let top=Math.max(...teams.map(t=>t.steps));
- let winners=teams.filter(t=>t.steps===top);
- document.getElementById("status").textContent="Perlombaan selesai!";
- document.getElementById("turnTitle").textContent="🏆 Hasil Perlombaan";
- document.getElementById("intro").innerHTML=(top>0?"Pemenang: <b>"+winners.map(t=>t.name).join(", ")+"</b>! 🎉":"Perlombaan selesai!")+"<br>Skor akhir ditampilkan pada papan skor.";
- renderTeams();
+ document.getElementById("startBtn").textContent="Main Lagi";
 }
 function resetGame(){
- resetData();renderTeams();
- document.getElementById("quiz").hidden=true;
+ active=false;checked=false;round=0;initTeams();
+ document.getElementById("questions").hidden=false;
+ document.getElementById("questions").innerHTML="";
  document.getElementById("startBtn").hidden=false;
- document.getElementById("startBtn").textContent="🚦 MULAI BALAPAN";
- document.getElementById("intro").hidden=false;
- document.getElementById("status").textContent="Siap bermain!";
- document.getElementById("turnTitle").textContent="Mulai Perlombaan";
- document.getElementById("intro").textContent="Bersiaplah, para pembalap! Tekan tombol mulai untuk memulai kuis.";
+ document.getElementById("startBtn").textContent="🚦 Mulai Balapan";
+ document.getElementById("checkBtn").hidden=true;
+ document.getElementById("nextBtn").hidden=true;
+ document.getElementById("roundTitle").textContent="Siap Memulai!";
+ document.getElementById("instruction").textContent="Setiap kelompok mendapat 10 soal yang diacak.";
+ document.getElementById("progress").textContent="";
+ renderRaces();
 }
-resetData();renderTeams();
+initTeams();renderRaces();
 </script>
 </body>
 </html>
